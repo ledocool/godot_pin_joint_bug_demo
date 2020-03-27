@@ -2197,6 +2197,9 @@ rotation = -1.6189e-05
 [node name="IngameHint" parent="Scenery/SecretArea" index="28" instance=ExtResource( 52 )]
 position = Vector2( 7632.88, -5197.94 )
 
+[node name="Sprite" parent="Scenery/SecretArea/IngameHint" index="0"]
+frame = 0
+
 [node name="RichTextLabel" parent="Scenery/SecretArea/IngameHint" index="1"]
 margin_bottom = 191.0
 text = "Congratualtions! You've found a secret. You may have the spoils.

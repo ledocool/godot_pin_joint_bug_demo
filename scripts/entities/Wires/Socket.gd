@@ -1,11 +1,7 @@
-extends RigidBody2D
+extends StaticBody2D
 
 func Enable():
-	for i in $CollisionShape2D/Joint.get_children():
-		if(i.has_method("Enable")):
-			i.Enable()
+	pass
 	
 func Disable():
-	for i in $CollisionShape2D/Joint.get_children():
-		if(i.has_method("Disable")):
-			i.Disable()
+	pass

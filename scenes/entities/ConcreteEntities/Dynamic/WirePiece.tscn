@@ -16,7 +16,7 @@ animations = [ {
 radius = 2.92934
 height = 41.3636
 
-[node name="WirePiece" type="StaticBody2D"]
+[node name="WirePiece" type="RigidBody2D"]
 z_index = -10
 collision_layer = 32
 collision_mask = 0
@@ -32,7 +32,5 @@ frames = SubResource( 1 )
 position = Vector2( 0, 19.7458 )
 shape = SubResource( 2 )
 
-[node name="Joint" type="PinJoint2D" parent="CollisionShape2D"]
-position = Vector2( 0, 22.294 )
-bias = 0.9
-softness = 0.1
+[node name="Joint" type="Position2D" parent="."]
+position = Vector2( 0, 42.0398 )

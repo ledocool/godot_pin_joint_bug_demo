@@ -66,9 +66,12 @@ wait_time = 0.18
 [node name="Turbulence" type="Node2D" parent="."]
 
 [node name="Area2D" type="Area2D" parent="Turbulence"]
+space_override = 1
+gravity_point = true
+gravity_vec = Vector2( 0, -1 )
 gravity = -1000.0
 collision_layer = 0
-collision_mask = 0
+collision_mask = 32
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Turbulence/Area2D"]
 shape = SubResource( 3 )

@@ -22,6 +22,7 @@ var startNodeRotation = 0
 var endNodeRotation = 0
 var created = false
 
+
 func Enable():
 	if(Engine.is_editor_hint()):
 		return
@@ -122,13 +123,41 @@ func _buildChain():
 	if (!parent):
 		return
 	
+	var elements: Array = []
+	var joints: Array = []
+	
 	parent.add_child(start)
-	parent = start
+	elements.append(start)
+	
+	var coords = start.find_node("Joint").get_position()
+	joints.append(_addJoint(parent, start.get_position()))
+	var cumulativeAngle = 0
 	
 	for angle in chainArray:
-		parent = _addPiece(parent, PIECE.instance(), angle)
+		cumulativeAngle += angle
+		var elem = _addPiece(parent, PIECE.instance(), coords, cumulativeAngle)
+		coords += elem.find_node("Joint").get_position().rotated(elem.get_rotation())
+		var joint = _addJoint(parent, coords)
+		
+		joints.append(joint)
+		elements.append(elem)
 	
-	parent = _addPiece(parent, end, endNodeRotation)
+	_addPiece(parent, end, coords, endNodeRotation)
+	elements.append(end)
+	
+	var i = 1
+	for joint in joints:
+		if i == 3: break;
+		var el1 = elements[i-1]
+		var el2 = elements[i]
+		_joinWires(joint, el1, el2)
+		print_debug("---------")
+		print_debug(joint.get_name())
+		print_debug(el1.find_node("Joint").get_global_position())
+		print_debug(joint.position)
+		print_debug(el2.position)
+		print_debug("---------")
+		i += 1
 
 
 func _getChainFunc():
@@ -144,22 +173,32 @@ func _removePieces(start):
 	for child in children:
 		child.queue_free()
 
-#var piece = PIECE.instance()
-func _addPiece(parent, piece, rotation = 0):
+
+func _addPiece(parent, piece, coord: Vector2 = Vector2(0, 0), rotation = 0):
 	if(parent == null):
 		return
-	
-	var joint = parent.find_node("Joint")
-	piece.set_name("WirePiece")
+
 	piece.set_rotation(deg2rad(rotation))
-	joint.add_child(piece)
+	parent.add_child(piece)
+	piece.set_position(coord)
 	
-	if(!Engine.is_editor_hint()):
-		joint.node_a = parent.get_path()
-		joint.node_b = piece.get_path()
-		
 	return piece
 	
 	
+func _addJoint(parent, coord):
+	var joint = PinJoint2D.new()
+	joint.set_position(coord)
+	parent.add_child(joint)
+	return joint
+
+
+func _joinWires(joint: PinJoint2D, elem1: Node2D, elem2: Node2D):
+	if(Engine.is_editor_hint()):
+		return
+	
+	joint.node_a = joint.get_path_to(elem1)
+	joint.node_b = joint.get_path_to(elem2)
+
+
 func _on_Generator_switch(enabled):
 	emit_signal("wire_switch", enabled)
